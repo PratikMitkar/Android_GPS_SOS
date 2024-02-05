@@ -2,16 +2,14 @@ package com.example.androidgpssos;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.os.Bundle;
-import android.view.View;
+
+
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.content.DialogInterface;
-
-import androidx.appcompat.app.AppCompatActivity;
-
 import com.example.androidgpssos.contact.Contact;
 import com.example.androidgpssos.contact.ContactDataManager;
 
@@ -34,12 +32,7 @@ public class ContactActivity extends AppCompatActivity {
         contactsLayout = findViewById(R.id.contactsLayout);
 
         Button addButton = findViewById(R.id.addButton);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addContact();
-            }
-        });
+        addButton.setOnClickListener(v -> addContact());
 
         // Load contacts from storage when the app starts
         contacts = ContactDataManager.loadContacts(this);
@@ -83,14 +76,12 @@ public class ContactActivity extends AppCompatActivity {
             contactsLayout.addView(textView);
             Button editbutton = new Button(this);
             editbutton.setText("Edit");
-            editbutton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    showEditDialog(position);
-
-                }
-            });
+            editbutton.setOnClickListener(v -> showEditDialog(position));
             contactsLayout.addView(editbutton);
+            Button deleteButton = new Button(this);
+            deleteButton.setText("Delete");
+            deleteButton.setOnClickListener(v -> showDeleteDialog(position));
+            contactsLayout.addView(deleteButton);
         }
     }
 
@@ -116,24 +107,32 @@ public class ContactActivity extends AppCompatActivity {
         builder.setView(layout);
 
         // Set up the buttons
-        builder.setPositiveButton("Save", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                String newName = inputName.getText().toString();
-                String newPhoneNumber = inputPhoneNumber.getText().toString();
+        builder.setPositiveButton("Save", (dialog, which) -> {
+            String newName = inputName.getText().toString();
+            String newPhoneNumber = inputPhoneNumber.getText().toString();
 
-                contacts.set(position, new Contact(newName, newPhoneNumber));
-                ContactDataManager.saveContacts(ContactActivity.this, contacts);
-                displayContacts();
-            }
+            contacts.set(position, new Contact(newName, newPhoneNumber));
+            ContactDataManager.saveContacts(ContactActivity.this, contacts);
+            displayContacts();
         });
 
-        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                dialog.cancel();
-            }
+        builder.setNegativeButton("Cancel", (dialog, which) -> dialog.cancel());
+
+        builder.show();
+    }
+    private void showDeleteDialog(final int position) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Delete Contact");
+        builder.setMessage("Are you sure you want to delete this contact?");
+
+        // Set up the buttons
+        builder.setPositiveButton("Yes", (dialog, which) -> {
+            contacts.remove(position);
+            ContactDataManager.saveContacts(ContactActivity.this, contacts);
+            displayContacts();
         });
+
+        builder.setNegativeButton("No", (dialog, which) -> dialog.cancel());
 
         builder.show();
     }
