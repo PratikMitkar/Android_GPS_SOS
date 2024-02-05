@@ -12,8 +12,7 @@
     <Button
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="add contct"
-        android:id="@+id/addcont"
-        ></Button>
+        android:text="@string/add_contct"
+        android:id="@+id/addcont" />
 
 </RelativeLayout>
