@@ -7,6 +7,8 @@ import androidx.appcompat.app.AppCompatActivity;
 public class MainActivity extends AppCompatActivity {
 
     Button addbtn;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -17,4 +19,5 @@ public class MainActivity extends AppCompatActivity {
         addbtn.setOnClickListener(v -> startActivity(new Intent(MainActivity.this, ContactActivity.class)));
 
     }
+
 }
